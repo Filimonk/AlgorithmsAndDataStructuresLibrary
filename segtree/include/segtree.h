@@ -1,9 +1,14 @@
-#include <iostream> // убрать
+#ifndef DO_NOT_INCLUDE_SYS_LIBS
+
+    #include <iostream> // убрать, когда переделаю getTree()
+    #include <sys/types.h>
+
+#endif
 
 #ifndef SEGTREE
 #define SEGTREE
 
-namespace adstd { // algorithms and data structures templates definition 
+namespace addstd { // algorithms and data structures templates definition 
 
 
 
@@ -81,7 +86,7 @@ private:
 
 
 
-} // namespace adstd
+} // namespace addstd
 
 
 #include <../src/segtree.cpp>

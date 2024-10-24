@@ -1,9 +1,13 @@
-#include <bits/stdc++.h>
+#ifndef DO_NOT_INCLUDE_SYS_LIBS
+
+#include <iostream>
+
+#endif // DO_NOT_INCLUDE_SYS_LIBS
 
 #include "segtree.h"
 
 using namespace std;
-using namespace adstd;
+using namespace addstd;
 
 #define int long long
 
@@ -50,3 +54,4 @@ cin.tie(0);
 
     return 0;
 }
+

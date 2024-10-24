@@ -1,4 +1,4 @@
-namespace adstd { // algorithms and data structures templates definition 
+namespace addstd { // algorithms and data structures templates definition 
 
 
 
@@ -204,4 +204,4 @@ T sumOfSubsegment(const T& leftChild, const T& rightChild) {
 
 
 
-} // namespace adstd
+} // namespace addstd
