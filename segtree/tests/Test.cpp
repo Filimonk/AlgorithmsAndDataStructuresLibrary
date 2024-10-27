@@ -1,8 +1,6 @@
-#include <bits/stdc++.h>
-
 #include "segtree.h"
 
-using namespace adstd;
+using namespace addstd;
 
 long long myFunc(const long long &l, const long long &r) {
     return 0;
