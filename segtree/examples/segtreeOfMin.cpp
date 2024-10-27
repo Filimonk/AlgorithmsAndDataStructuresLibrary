@@ -16,7 +16,7 @@ void solve() {
     int n, m;
     cin >> n >> m;
     
-    segtree <int> st(n);
+    segtree <int> st(n, minOfSubsegment);
     for (int i = 0; i < n; ++i) {
         int a; cin >> a;
         st.set(i, a);

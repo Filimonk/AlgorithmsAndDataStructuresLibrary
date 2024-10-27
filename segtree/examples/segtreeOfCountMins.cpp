@@ -12,14 +12,22 @@ using namespace addstd;
 
 #define int long long
 
+pair <int, int> countOfMins(const pair <int, int> &a, const pair <int, int> &b) {
+    if (a.first == b.first) {
+        return {a.first, a.second + b.second};
+    }
+    
+    return (a.first < b.first? a: b);
+}
+
 void solve() {
     int n, m;
     cin >> n >> m;
     
-    segtree <int> st(n);
+    segtree <pair <int, int> > st(n, make_pair(1000000000000LL, 1000000000000LL), countOfMins);
     for (int i = 0; i < n; ++i) {
         int a; cin >> a;
-        st.set(i, a);
+        st.set(i, make_pair(a, 1));
     }
     
     for (int i = 0; i < m; ++i) {
@@ -30,13 +38,14 @@ void solve() {
             int i, v;
             cin >> i >> v;
             
-            st.set(i, v);
+            st.set(i, make_pair(v, 1));
         }
         else {
             int l, r;
             cin >> l >> r;
             
-            cout << st.get(l, r) << "\n";
+            pair <int, int> p = st.get(l, r);
+            cout << p.first << " " << p.second << "\n";
         }
     }
 }
