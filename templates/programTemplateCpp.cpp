@@ -1,5 +1,6 @@
 #ifndef DO_NOT_INCLUDE_SYS_LIBS
 
+// Area for system headers
 #include <bits/stdc++.h>
 
 #endif // DO_NOT_INCLUDE_SYS_LIBS

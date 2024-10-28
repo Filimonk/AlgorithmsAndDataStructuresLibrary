@@ -1,4 +1,4 @@
-PROGRAM_NAME = place_to_insert_name
+PROGRAM_NAME = segtreeOfSum
 
 
 CC = g++
