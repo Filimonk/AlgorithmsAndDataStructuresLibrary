@@ -169,7 +169,12 @@ T segtree<T>::get(const size_t& l, const size_t& r) const {
         throw "Incorrect format of segment boundaries";
     }
     
-    return get(0, 0, sizeOfBottomLayer, l, r);
+    if (r == sizeOfArray_) {
+        return get(0, 0, sizeOfBottomLayer, l, sizeOfBottomLayer);
+    }
+    else {
+        return get(0, 0, sizeOfBottomLayer, l, r);
+    }
 }
 
 

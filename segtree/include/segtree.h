@@ -25,15 +25,6 @@ T sumOfSubsegment(const T&, const T&); // надо будет ловить ис�
 template<class T>
 class segtree {
 public:
-    
-    class iterator {
-    public:
-        void moveLeft();
-        void moveRight();
-    
-    private:
-        size_t index{0};
-    };
 
     //segtree(size_t, T/*initialization value*/, /*ссылка на ф-ию взаимодействия*/); //для не стандартных типов данных
     //segtree(size_t, /*ссылка на ф-ию взаимодействия*/);
