@@ -5,7 +5,7 @@ all: install
 install:
 	mkdir -p ~/.local/bin
 	# echo "PATH=\"$$HOME/.local/bin:$$PATH\"" | sudo tee -p /etc/environment > /dev/null
-	# /bin/bash /etc/environment # source /etc/environment
+	# . /etc/environment
 	cp ./templates/crcpp.sh ~/.local/bin/crcpp
 	chmod +x ~/.local/bin/crcpp
 	
