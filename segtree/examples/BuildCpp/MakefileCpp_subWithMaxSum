@@ -1,4 +1,4 @@
-PROGRAM_NAME = segtreeOfSum
+PROGRAM_NAME = subWithMaxSum
 
 
 CC = g++
@@ -8,7 +8,7 @@ GFLAGS = -Wall -Wextra -Wuninitialized -Wunused-variable -Wunused-function -Wunu
 START_STRING = \#ifndef DO_NOT_INCLUDE_SYS_LIBS
 END_STRING = \#endif \/\/ DO_NOT_INCLUDE_SYS_LIBS
 
-PATH_TO_BUILD_DIR = ./buildCpp
+PATH_TO_BUILD_DIR = ./BuildCpp
 
 .PHONY: all send clean
 
@@ -37,9 +37,7 @@ ${PATH_TO_BUILD_DIR}/send_${PROGRAM_NAME}.cpp: ${PROGRAM_NAME}.cpp
 				 -I ~/AlgorithmsAndDataStructuresLibrary/*/include
 		               
 	
-	sed -i /^\#.*$$/d ${PATH_TO_BUILD_DIR}/.send_$<.temp # в будущем стоит либо усовершенствовать, либо заменить на самописный
-									 # препроцессор т. к. это может привести к проблемам, когда в коде есть перенос (string) и 
-									 # на новой строке начало - #
+	sed -i /^\#.*$$/d ${PATH_TO_BUILD_DIR}/.send_$<.temp
 	
 	cat ${PATH_TO_BUILD_DIR}/.send_$<.temp >> $@
 	rm -f ${PATH_TO_BUILD_DIR}/.send_$<.temp
@@ -47,7 +45,4 @@ ${PATH_TO_BUILD_DIR}/send_${PROGRAM_NAME}.cpp: ${PROGRAM_NAME}.cpp
 
 clean:
 	rm -rf ${PATH_TO_BUILD_DIR}/${PROGRAM_NAME} ${PATH_TO_BUILD_DIR}/send_${PROGRAM_NAME}.cpp
-
-includes.d: ${PROGRAM_NAME}.cpp # это может понадобиться, когда я захочу писать самописный препроцессор
-	$(CC) -MM -MF $@ -I ~/AlgorithmsAndDataStructuresLibrary/*/include $<
 
