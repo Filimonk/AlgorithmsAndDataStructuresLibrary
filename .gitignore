@@ -2,3 +2,4 @@
 buildTests
 *.out
 send_*
+*.swp
