@@ -4,21 +4,21 @@ namespace addstd { // algorithms and data structures templates definition
 
 template<class T>
 size_t segtree<T>::initSizeOfBottomLayer() {
-    size_t sizeOfBottomLayer{1};
+    size_t sizeOfBottomLayer_local{1};
     
-    while (sizeOfBottomLayer != 0 && sizeOfBottomLayer < sizeOfArray_) {
-        sizeOfBottomLayer <<= 1;
+    while (sizeOfBottomLayer_local != 0 && sizeOfBottomLayer_local < sizeOfArray_) {
+        sizeOfBottomLayer_local <<= 1;
     }
     
-    if (sizeOfBottomLayer == 0) {
+    if (sizeOfBottomLayer_local == 0) {
         throw "Maximum allowed array length exceeded";
     }
     
-    return sizeOfBottomLayer;
+    return sizeOfBottomLayer_local;
 }
 
 template<class T>
-segtree<T>::segtree(size_t sizeOfArray, const T& extremeValue, T(*interactionFunc)(const T&, const T&)) :
+segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T&, T&), const T& extremeValue) :
                                                                         sizeOfArray_{sizeOfArray},
                                                                         sizeOfBottomLayer{initSizeOfBottomLayer()},
                                                                         tree{new T[2 * sizeOfBottomLayer - 1]} {
@@ -29,7 +29,7 @@ segtree<T>::segtree(size_t sizeOfArray, const T& extremeValue, T(*interactionFun
 }
 
 template<class T>
-segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(const T&, const T&)) :
+segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T&, T&)) :
                                                                         sizeOfArray_{sizeOfArray},
                                                                         sizeOfBottomLayer{initSizeOfBottomLayer()},
                                                                         tree{new T[2 * sizeOfBottomLayer - 1]} {
@@ -46,7 +46,7 @@ segtree<T>::~segtree() {
 
 
 template<class T>
-void segtree<T>::setInteractionFunc(T(*interactionFunc)(const T&, const T&)) {
+void segtree<T>::setInteractionFunc(T(*interactionFunc)(T&, T&)) {
     interactionFunc_ = interactionFunc;
 }
 
@@ -100,7 +100,7 @@ void segtree<T>::clear() {
 }
 
 template<class T>
-void segtree<T>::refresh(const T& extremeValue, T(*interactionFunc)(const T&, const T&)) {
+void segtree<T>::refresh(T(*interactionFunc)(T&, T&), const T& extremeValue) {
     setInteractionFunc(interactionFunc);
     setExtremeValue(extremeValue);
     
@@ -108,7 +108,7 @@ void segtree<T>::refresh(const T& extremeValue, T(*interactionFunc)(const T&, co
 }
 
 template<class T>
-void segtree<T>::refresh(T(*interactionFunc)(const T&, const T&)) {
+void segtree<T>::refresh(T(*interactionFunc)(T&, T&)) {
     setInteractionFunc(interactionFunc);
     setExtremeValue();
     
@@ -154,7 +154,7 @@ T segtree<T>::get(size_t x, size_t lx, size_t rx, const size_t& l, const size_t&
     }
     
     size_t m = (lx + rx) / 2;
-    T leftVal = get(2 * x + 1, lx, m, l, r);
+    T leftVal  = get(2 * x + 1, lx, m, l, r);
     T rightVal = get(2 * x + 2, m, rx, l, r);
 
     return interactionFunc_(leftVal, rightVal); // поймать исключение
@@ -193,17 +193,17 @@ void segtree<T>::getTree() const {
 
 
 template<class T>
-T minOfSubsegment(const T& leftChild, const T& rightChild) {
+T minOfSubsegment(T& leftChild, T& rightChild) {
     return (leftChild < rightChild? leftChild: rightChild); // надо будет ловить исключения на не соответствие типов (тут на оператор <)
 }
 
 template<class T>
-T maxOfSubsegment(const T& leftChild, const T& rightChild) {
+T maxOfSubsegment(T& leftChild, T& rightChild) {
     return (leftChild > rightChild? leftChild: rightChild); // надо будет ловить исключения на не соответствие типов (тут на оператор <)
 }
 
 template<class T>
-T sumOfSubsegment(const T& leftChild, const T& rightChild) {
+T sumOfSubsegment(T& leftChild, T& rightChild) {
     return (leftChild + rightChild); // надо будет ловить исключения на не соответствие типов (тут на оператор +)
 }
 

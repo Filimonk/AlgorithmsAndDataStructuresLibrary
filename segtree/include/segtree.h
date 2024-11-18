@@ -13,30 +13,29 @@ namespace addstd { // algorithms and data structures templates definition
 
 
 template<class T>
-T minOfSubsegment(const T&, const T&); // надо будет ловить исключения на не соответствие типов
+T minOfSubsegment(T&, T&); // надо будет ловить исключения на не соответствие типов
 
 template<class T>
-T maxOfSubsegment(const T&, const T&); // надо будет ловить исключения на не соответствие типов
+T maxOfSubsegment(T&, T&); // надо будет ловить исключения на не соответствие типов
 
 template<class T>
-T sumOfSubsegment(const T&, const T&); // надо будет ловить исключения на не соответствие типов
-
+T sumOfSubsegment(T&, T&); // надо будет ловить исключения на не соответствие типов
 
 template<class T>
 class segtree {
 public:
 
-    //segtree(size_t, T/*initialization value*/, /*ссылка на ф-ию взаимодействия*/); //для не стандартных типов данных
+    //segtree(size_t, /*ссылка на ф-ию взаимодействия*/, T/*initialization value*/); //для не стандартных типов данных
     //segtree(size_t, /*ссылка на ф-ию взаимодействия*/);
-                     // дерево по умолчанию (мин) для стандартных 
+                     // дерево по умолчанию (сум) для стандартных 
                      // типов (?bool, ?char, ?short, int, ?float, long long, ?double,
                      // ?long double, ?unsigned char & short, unsigned int & long long, pair <..., ...>, set <...>, ?map <...>,
                      // ?unordered set & map, ??string, ?vector, ?int[], ?char[], ??long long[], ...)
                      // 
                      // имеет возможность давать ссылки на
                      // стандартные ф-ии взаимодействия (макс, сум, ...)
-    segtree(size_t, const T&, T(*)(const T&, const T&)); 
-    segtree(size_t, T(*)(const T&, const T&) = sumOfSubsegment); 
+    segtree(size_t, T(*)(T&, T&), const T&); 
+    segtree(size_t, T(*)(T&, T&) = sumOfSubsegment); 
     segtree() = delete;
     ~segtree();
     
@@ -47,10 +46,11 @@ public:
     //void read(); // вводить с переданного потока
     //build == read
     //iterator<t> begin();
+    //методы поиска первого, последнего (k-го элемента)
     
     void clear();
-    void refresh(const T&, T(*)(const T&, const T&));
-    void refresh(T(*)(const T&, const T&));
+    void refresh(T(*)(T&, T&), const T&);
+    void refresh(T(*)(T&, T&));
     //refresh() == clear()
     
     void set(size_t, size_t, size_t, const size_t&, const T&); // поймать исключение
@@ -65,12 +65,12 @@ private:
     const size_t sizeOfArray_;
     const size_t sizeOfBottomLayer;
     T* const tree;
-    T(*interactionFunc_)(const T&, const T&);
+    T(*interactionFunc_)(T&, T&);
     T extremeValue_;
     //T* beginOfLastLayer; // а может это должен быть итератор
     
     size_t initSizeOfBottomLayer();
-    void setInteractionFunc(T(*)(const T&, const T&)); // возможно, стоит добавить ловлю исключений
+    void setInteractionFunc(T(*)(T&, T&)); // возможно, стоит добавить ловлю исключений
     void setExtremeValue(const T&); // возможно, стоит добавить ловлю исключений
     void setExtremeValue(); // нужно добавить типов
 };
