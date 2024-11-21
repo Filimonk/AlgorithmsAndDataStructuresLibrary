@@ -36,9 +36,9 @@ public:
                      // имеет возможность давать ссылки на
                      // стандартные ф-ии взаимодействия (макс, сум, ...)
     
-    segtree(size_t, T(*)(T, T), const T&); 
-    segtree(size_t, T(*)(T, T) = sumOfSubsegment); 
-    segtree(size_t, void (*)(T&, T&, T&), const T&); 
+    segtree(size_t, T(*)(T, T), const T&);           // поймать исключение при выделении динамической памяти
+    segtree(size_t, T(*)(T, T) = sumOfSubsegment);   //
+    segtree(size_t, void (*)(T&, T&, T&), const T&); // поймать исключение при выделении динамической памяти
     
     segtree() = delete;
     ~segtree();
@@ -46,9 +46,9 @@ public:
     segtree(const segtree&) = delete;
     segtree& operator=(const segtree&) = delete;
     
-    //добавить класс итераторов
     //void read(); // вводить с переданного потока
     //build == read
+    //добавить класс итераторов
     //iterator<t> begin();
     //методы поиска первого, последнего (k-го элемента)
     
@@ -56,30 +56,38 @@ public:
     void refresh(T(*)(T, T), const T&);
     void refresh(T(*)(T, T));
     void refresh(void (*)(T&, T&, T&), const T&);
-    void refresh(void (*)(T&, T&, T&));
-    //refresh() == clear()
+    void refresh() { clear(); }
+    
+    void resize(size_t);                                 // поймать исключение при выделении динамической памяти 
+    void assign(size_t, T(*)(T, T), const T&);           //
+    void assign(size_t, T(*)(T, T));                     //
+    void assign(size_t, void (*)(T&, T&, T&), const T&); // поймать исключение при выделении динамической памяти 
+    
     
     void setWithCopies(size_t, size_t, size_t, const size_t&, const T&); // поймать исключение
     void setWithRefers(size_t, size_t, size_t, const size_t&, const T&); // поймать исключение
     void set(const size_t&, const T&); 
     T getWithCopies(size_t, size_t, size_t, const size_t&, const size_t&) const; // поймать исключение
-    T get(const size_t&, const size_t&) const; // переделать на возврат итератора
+    T get(const size_t&, const size_t&) const;
     void getWithRefers(T&, size_t, size_t, size_t, const size_t&, const size_t&) const; // поймать исключение
-    void get(T&, const size_t&, const size_t&) const; // переделать на возврат итератора
+    void get(T&, const size_t&, const size_t&) const;
     
     // debuging
-    void getTree() const; // переименовать в wright и выводить в переданный поток
+    void getTree() const; // переименовать в read и выводить в переданный поток
     
 private:
-    const size_t sizeOfArray_;
-    const size_t sizeOfBottomLayer;
-    T* const tree;
-    T(*interactionFuncWithCopies)(T, T);
+    size_t sizeOfArray_;
+    size_t sizeOfWorkingBottomLayer;
+    size_t sizeOfGlobalBottomLayer;
+    T* tree;
+    T* beginOfWorkingBottomLayer;
+    
+    T (*interactionFuncWithCopies)(T, T);
     void (*interactionFuncWithRefers)(T&, T&, T&);
     T extremeValue_;
-    //T* beginOfLastLayer; // а может это должен быть итератор
     
-    size_t initSizeOfBottomLayer();
+    
+    size_t countSizeOfWorkingBottomLayer(size_t);
     void setExtremeValue(const T&); // возможно, стоит добавить ловлю исключений
     void setExtremeValue(); // нужно добавить типов
     void setInteractionFunc(T(*)(T, T)); // возможно, стоит добавить ловлю исключений

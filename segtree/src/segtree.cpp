@@ -3,36 +3,42 @@ namespace addstd { // algorithms and data structures templates definition
 
 
 template<class T>
-size_t segtree<T>::initSizeOfBottomLayer() {
-    size_t sizeOfBottomLayer_local{1};
+size_t segtree<T>::countSizeOfWorkingBottomLayer(size_t sizeOfArray) {
+    size_t sizeOfWorkingBottomLayer_local{1};
     
-    while (sizeOfBottomLayer_local != 0 && sizeOfBottomLayer_local < sizeOfArray_) {
-        sizeOfBottomLayer_local <<= 1;
+    while (sizeOfWorkingBottomLayer_local != 0 && sizeOfWorkingBottomLayer_local < sizeOfArray) {
+        sizeOfWorkingBottomLayer_local <<= 1;
     }
     
-    if (sizeOfBottomLayer_local == 0) {
+    if (sizeOfWorkingBottomLayer_local <= 0) {
         throw "Maximum allowed array length exceeded";
     }
     
-    return sizeOfBottomLayer_local;
+    return sizeOfWorkingBottomLayer_local;
 }
 
 template<class T>
-segtree<T>::segtree (size_t sizeOfArray, T(*interactionFunc)(T, T), const T& extremeValue) :
-                                                                     sizeOfArray_{sizeOfArray},
-                                                                     sizeOfBottomLayer{initSizeOfBottomLayer()},
-                                                                     tree{new T[2 * sizeOfBottomLayer - 1]} {
+segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T, T), const T& extremeValue) {
+    sizeOfArray_ = sizeOfArray;
+    sizeOfWorkingBottomLayer = countSizeOfWorkingBottomLayer(sizeOfArray);
+    sizeOfGlobalBottomLayer = sizeOfWorkingBottomLayer;
+    tree = new T[2 * sizeOfGlobalBottomLayer - 1];
+    beginOfWorkingBottomLayer = tree + sizeOfGlobalBottomLayer - 1;
+    
     setInteractionFunc(interactionFunc);
     setExtremeValue(extremeValue);
-    
+
     clear();
 }
 
 template<class T>
-segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T, T)) :
-                                                                     sizeOfArray_{sizeOfArray},
-                                                                     sizeOfBottomLayer{initSizeOfBottomLayer()},
-                                                                     tree{new T[2 * sizeOfBottomLayer - 1]} {
+segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T, T)) {
+    sizeOfArray_ = sizeOfArray;
+    sizeOfWorkingBottomLayer = countSizeOfWorkingBottomLayer(sizeOfArray);
+    sizeOfGlobalBottomLayer = sizeOfWorkingBottomLayer;
+    tree = new T[2 * sizeOfGlobalBottomLayer - 1];
+    beginOfWorkingBottomLayer = tree + sizeOfGlobalBottomLayer - 1;
+    
     setInteractionFunc(interactionFunc);
     setExtremeValue();
     
@@ -40,10 +46,13 @@ segtree<T>::segtree(size_t sizeOfArray, T(*interactionFunc)(T, T)) :
 }
 
 template<class T>
-segtree<T>::segtree (size_t sizeOfArray, void (*interactionFunc)(T&, T&, T&), const T& extremeValue) :
-                                                                     sizeOfArray_{sizeOfArray},
-                                                                     sizeOfBottomLayer{initSizeOfBottomLayer()},
-                                                                     tree{new T[2 * sizeOfBottomLayer - 1]} {
+segtree<T>::segtree(size_t sizeOfArray, void (*interactionFunc)(T&, T&, T&), const T& extremeValue) {
+    sizeOfArray_ = sizeOfArray;
+    sizeOfWorkingBottomLayer = countSizeOfWorkingBottomLayer(sizeOfArray);
+    sizeOfGlobalBottomLayer = sizeOfWorkingBottomLayer;
+    tree = new T[2 * sizeOfGlobalBottomLayer - 1];
+    beginOfWorkingBottomLayer = tree + sizeOfGlobalBottomLayer - 1;
+    
     setInteractionFunc(interactionFunc);
     setExtremeValue(extremeValue);
     
@@ -112,7 +121,7 @@ void segtree<long long>::setExtremeValue() {
 
 template<class T>
 void segtree<T>::clear() {
-    for (size_t i = 0; i < 2 * sizeOfBottomLayer - 1; ++i) {
+    for (size_t i = 0; i < 2 * sizeOfWorkingBottomLayer - 1; ++i) {
         tree[i] = extremeValue_;
     }
 }
@@ -141,12 +150,43 @@ void segtree<T>::refresh(void (*interactionFunc)(T&, T&, T&), const T& extremeVa
     clear();
 }
 
+
 template<class T>
-void segtree<T>::refresh(void (*interactionFunc)(T&, T&, T&)) {
+void segtree<T>::resize(size_t sizeOfArray) {
+    sizeOfArray_ = sizeOfArray;
+    sizeOfWorkingBottomLayer = countSizeOfWorkingBottomLayer(sizeOfArray);
+    if (sizeOfWorkingBottomLayer > sizeOfGlobalBottomLayer) {
+        delete[] tree;
+        tree = new T[2 * sizeOfWorkingBottomLayer - 1];
+        sizeOfGlobalBottomLayer = sizeOfWorkingBottomLayer;
+    }
+    beginOfWorkingBottomLayer = tree + sizeOfWorkingBottomLayer - 1;
+    
+    clear();
+}
+
+template<class T>
+void segtree<T>::assign(size_t sizeOfArray, T(*interactionFunc)(T, T), const T& extremeValue) {
+    setInteractionFunc(interactionFunc);
+    setExtremeValue(extremeValue);
+    
+    resize(sizeOfArray);
+}
+
+template<class T>
+void segtree<T>::assign(size_t sizeOfArray, T(*interactionFunc)(T, T)) {
     setInteractionFunc(interactionFunc);
     setExtremeValue();
     
-    clear();
+    resize(sizeOfArray);
+}
+
+template<class T>
+void segtree<T>::assign(size_t sizeOfArray, void (*interactionFunc)(T&, T&, T&), const T& extremeValue) {
+    setInteractionFunc(interactionFunc);
+    setExtremeValue(extremeValue);
+    
+    resize(sizeOfArray);
 }
 
 
@@ -194,10 +234,10 @@ void segtree<T>::set(const size_t& index, const T& value) {
     
     switch (interactionFuncType) {
         case interactionFuncTypes::Copies:
-            setWithCopies(0, 0, sizeOfBottomLayer, index, value);
+            setWithCopies(0, 0, sizeOfWorkingBottomLayer, index, value);
             break;
         case interactionFuncTypes::Refers:
-            setWithRefers(0, 0, sizeOfBottomLayer, index, value);
+            setWithRefers(0, 0, sizeOfWorkingBottomLayer, index, value);
             break;
     }
 }
@@ -233,10 +273,10 @@ T segtree<T>::get(const size_t& l, const size_t& r) const {
     }
     
     if (r >= sizeOfArray_) {
-        return getWithCopies(0, 0, sizeOfBottomLayer, l, sizeOfBottomLayer);
+        return getWithCopies(0, 0, sizeOfWorkingBottomLayer, l, sizeOfWorkingBottomLayer);
     }
     else {
-        return getWithCopies(0, 0, sizeOfBottomLayer, l, r);
+        return getWithCopies(0, 0, sizeOfWorkingBottomLayer, l, r);
     }
 }
 
@@ -272,21 +312,21 @@ void segtree<T>::get(T& returnValue, const size_t& l, const size_t& r) const {
     returnValue = extremeValue_;
     
     if (r >= sizeOfArray_) {
-        getWithRefers(returnValue, 0, 0, sizeOfBottomLayer, l, sizeOfBottomLayer);
+        getWithRefers(returnValue, 0, 0, sizeOfWorkingBottomLayer, l, sizeOfWorkingBottomLayer);
     }
     else {
-        getWithRefers(returnValue, 0, 0, sizeOfBottomLayer, l, r);
+        getWithRefers(returnValue, 0, 0, sizeOfWorkingBottomLayer, l, r);
     }
 }
 
 
 template<class T>
 void segtree<T>::getTree() const {
-    std::cout << "Bottom layer length: " << sizeOfBottomLayer <<  std::endl;
-    std::cout << "Tree length: " << 2 * sizeOfBottomLayer - 1 << std:: endl; 
+    std::cout << "Bottom layer length: " << sizeOfWorkingBottomLayer <<  std::endl;
+    std::cout << "Tree length: " << 2 * sizeOfWorkingBottomLayer - 1 << std:: endl; 
     std::cout << "Tree:" << std::endl;
 
-    for (size_t i = 0; i < 2 * sizeOfBottomLayer - 1; ++i) {
+    for (size_t i = 0; i < 2 * sizeOfWorkingBottomLayer - 1; ++i) {
         std::cout << tree[i] << " ";
     }
     
