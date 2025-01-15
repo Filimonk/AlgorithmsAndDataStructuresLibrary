@@ -1,3 +1,5 @@
+#define _GLIBCXX_SANITIZE_VECTOR 1
+
 #ifndef DO_NOT_INCLUDE_SYS_LIBS
 
 // Area for system headers
