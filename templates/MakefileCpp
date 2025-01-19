@@ -10,6 +10,8 @@ END_STRING = \#endif \/\/ DO_NOT_INCLUDE_SYS_LIBS
 
 PATH_TO_BUILD_DIR = ./BuildCpp
 
+PATH_TO_ADDS_LIB  = ~/AlgorithmsAndDataStructuresLibrary/*/include 
+
 .PHONY: all send clean
 
 all: ${PATH_TO_BUILD_DIR}/${PROGRAM_NAME}.out send
@@ -19,7 +21,7 @@ all: ${PATH_TO_BUILD_DIR}/${PROGRAM_NAME}.out send
 
 ${PATH_TO_BUILD_DIR}/${PROGRAM_NAME}.out: ${PROGRAM_NAME}.cpp
 	@echo 'Компиляция программы'
-	$(CC) $(GFLAGS) $< -o $@ -I ~/AlgorithmsAndDataStructuresLibrary/*/include 
+	$(CC) $(GFLAGS) $< -o $@ -I ${PATH_TO_ADDS_LIB}
 	@echo
 
 send: ${PATH_TO_BUILD_DIR}/send_${PROGRAM_NAME}.cpp
@@ -34,7 +36,7 @@ ${PATH_TO_BUILD_DIR}/send_${PROGRAM_NAME}.cpp: ${PROGRAM_NAME}.cpp
 	sed -n '/${START_STRING}/,/${END_STRING}/{//!p;}' $< > $@
 	
 	$(CC) -E -O0 -D DO_NOT_INCLUDE_SYS_LIBS $< -o ${PATH_TO_BUILD_DIR}/.send_$<.temp \
-				 -I ~/AlgorithmsAndDataStructuresLibrary/*/include
+				 -I ${PATH_TO_ADDS_LIB}
 		               
 	
 	sed -i /^\#.*$$/d ${PATH_TO_BUILD_DIR}/.send_$<.temp

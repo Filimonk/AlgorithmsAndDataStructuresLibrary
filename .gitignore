@@ -3,3 +3,4 @@ buildTests
 *.out
 send_*
 *.swp
+/features/
